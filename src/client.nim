@@ -13,16 +13,17 @@ proc connect(socket: AsyncSocket, serverAddr: string) {.async.} =
 
 echo("Chat application started")
 if paramCount() == 0:
-  quit("Please specify the server address, e.g ./client localhost")
+  quit("Please specify the server address and username, e.g ./client localhost Gennaro")
 
 let serverAddr = paramStr(1)
+let user = paramStr(2)
 var socket = newAsyncSocket()
 asyncCheck connect(socket, serverAddr)
 
 var messageFlowVar = spawn stdin.readLine()
 while true:
   if messageFlowVar.isReady():
-    let message = createMessage("Anonymous", ^messageFlowVar)
+    let message = createMessage(user, ^messageFlowVar)
     asyncCheck socket.send(message)
     messageFlowVar = spawn stdin.readLine()
 
